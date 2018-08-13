@@ -37,7 +37,6 @@ class App extends Component {
     "float": "none",
     "clear":"both",
     "padding-top": "30px",
-    "overflow-y": "hidden",
     "-webkit-user-select": "none",
     "-webkit-app-region": "drag"
   }

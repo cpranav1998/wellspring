@@ -222,12 +222,12 @@
       token.text = inline.lexer(token.text);
 
       switch (token.type) {
-        case 'title': title_page.push('<h1>' + token.text + '</h1>'); title = token.text.replace('<br />', ' ').replace(/<(?:.|\n)*?>/g, ''); break;
-        case 'credit': title_page.push('<p class=\"credit\">' + token.text + '</p>'); break;
-        case 'author': title_page.push('<p class=\"authors\">' + token.text + '</p>'); break;
-        case 'authors': title_page.push('<p class=\"authors\">' + token.text + '</p>'); break;
-        case 'source': title_page.push('<p class=\"source\">' + token.text + '</p>'); break;
-        case 'notes': title_page.push('<p class=\"notes\">' + token.text + '</p>'); break;
+        case 'title': title_page.push('<h1 style = "text-align:center;">' + token.text + '</h1>'); title = token.text.replace('<br />', ' ').replace(/<(?:.|\n)*?>/g, ''); break;
+        case 'credit': title_page.push('<p class=\"credit\" style = "text-align:center;">' + token.text + '</p>'); break;
+        case 'author': title_page.push('<p class=\"authors\" style = "text-align:center;">' + token.text + '</p>'); break;
+        case 'authors': title_page.push('<p class=\"authors\" style = "text-align:center;">' + token.text + '</p>'); break;
+        case 'source': title_page.push('<p class=\"source\" style = "text-align:center;">' + token.text + '</p>'); break;
+        case 'notes': title_page.push('<p class=\"notes\" style = "text-align:right;">' + token.text + '</p>'); break;
         case 'draft_date': title_page.push('<p class=\"draft-date\">' + token.text + '</p>'); break;
         case 'date': title_page.push('<p class=\"date\">' + token.text + '</p>'); break;
         case 'contact': title_page.push('<p class=\"contact\">' + token.text + '</p>'); break;
