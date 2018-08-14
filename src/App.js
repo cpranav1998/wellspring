@@ -4,8 +4,11 @@ import Editor from './editor.js';
 import './App.css';
 const electron = window.require('electron');
 const fs = electron.remote.require('fs');
+const dialog = electron.remote.require('dialog');
 const ipcRenderer  = electron.ipcRenderer;
-const fountain = require('./fountain.js')
+const fountain = require('./fountain.js');
+
+
 
 class App extends Component {
   constructor(props) {
@@ -14,8 +17,26 @@ class App extends Component {
       source: "# Hello World",
       preview: fountain.parse("None") 
     }
-    this.fountainToHTML = this.fountainToHTML.bind(this)
+    this.fountainToHTML = this.fountainToHTML.bind(this);
   };
+  ipcRenderer.on('openNewFile', (event) => {
+    this.setState({source:""});
+  });
+  ipcRenderer.on('openFile', (event) => {
+    dialog.showOpenDialog({
+      properties: ['openFile']
+    },function (file) {
+      var textByLine = null
+      if (file !== undefined) {
+        var text = fs.readFileSync(file).toString('utf-8');
+        textByLine = text.split("\n");
+        this.setState({source:textByLine});
+      }
+    }
+  })});
+  ipcRenderer.on('saveFile', (event) => {
+    this.setState({source:""})
+  })
   fountainToHTML = (value) => {
     console.log("in fountain")
     this.state.preview = fountain.parse(value) 
@@ -23,6 +44,7 @@ class App extends Component {
     console.log(this.state.preview.html.script)
     this.forceUpdate();
   }
+
   topBorder = {
     "opacity": 0,
     "background-color":"red",
