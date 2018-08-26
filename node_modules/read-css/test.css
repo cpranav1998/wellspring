@@ -1,0 +1,20 @@
+.apple {
+  color: red;
+  border-radius: 50%;
+}
+
+@media (color), (update) {
+  .orange {
+    color: orange;
+  }
+}
+
+button:enabled {
+  cursor: pointer;
+}
+
+@media (orientation: portrait) {
+  .flex\@portrait {
+    display: flex;
+  }
+}

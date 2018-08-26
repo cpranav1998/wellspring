@@ -273,7 +273,13 @@
   };
     
   fountain.parse = function (script, tokens, callback) {
-    return parse(script, tokens, callback);
+    let parseVal = null;
+    try {
+      parseVal = parse(script, tokens, callback);
+    } catch(error) {
+      parseVal = ""
+    }
+    return parseVal
   };
 
   if (typeof module !== 'undefined') {

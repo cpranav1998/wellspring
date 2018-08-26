@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {UnControlled as CodeMirror} from 'react-codemirror2'
 require('codemirror/lib/codemirror.css');
-require('codemirror/mode/markdown/markdown');
 require('codemirror/theme/monokai.css');
 class Editor extends Component {
   constructor(props) {
     super(props);
+    this.instance = null;
   }
   render() {
     var options = {
@@ -18,9 +18,11 @@ class Editor extends Component {
         value={this.props.value}
         options={options}
         onChange={(editor, data, value) => {
-          console.log("in editor")
+          console.log(this.props.i)
           this.props.function(value)
         }}
+        editorDidMount={editor => { this.instance = editor;
+          this.props.onMount(this.instance);}}
       />
     );
   }

@@ -4,9 +4,15 @@ const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 const {Menu} = require('electron')
-
+const {ipcMain} = require('electron')
+const fs = require('fs');
+const http = require('http');
+const css = require('css');
+const read = require('read-css')
 const path = require('path');
 const url = require('url');
+const express = require('express')
+const server = express()
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -14,12 +20,11 @@ let mainWindow;
 
 function createWindow() {
     // Create the browser window.
-    mainWindow = new BrowserWindow({width: 800, 
+    mainWindow = new BrowserWindow({width: 1200, 
         height: 600, 
-        minWidth: 800,
-        minHeight: 600,
-        titleBarStyle: 'hiddenInset'});
-
+        minWidth: 1200,
+        minHeight: 600});
+    // titleBarStyle: 'hiddenInset'
     // and load the index.html of the app.
     const startUrl = process.env.ELECTRON_START_URL || url.format({
         pathname: path.join(__dirname, '/../build/index.html'),
@@ -38,12 +43,89 @@ function createWindow() {
         // when you should delete the corresponding element.
         mainWindow = null
     })
+    let pathJoiner = path.join
+    ipcMain.on('htmlToPdf', (event, path, htmlString)=> {
+        previewWindow = new BrowserWindow({width: 600,
+            height: 1000,
+            minWidth: 300,
+            minHeight: 500})
+        // const previewUrl = url.format({
+        //     pathname: pathJoiner(__dirname, '/../build/index.html#/preview'),
+        //     protocol: 'file:',
+        //     slashes: true
+        // });
+        server.set('views', __dirname);
+        server.set('view engine', 'pug')
+        server.get('/', (req, res) => {
+            res.set('Content-Type', 'text/html');
+            res.render('preview', { innerHtmlContent: htmlString})
+            // res.render('<link rel="stylesheet" type="text/css" src="index.css">'+
+            // htmlString)
+        })
+        let instance = server.listen(1337, () => console.log('Preview on port 1337!'))
+        previewWindow.loadURL('http://localhost:1337')
+        // setTimeout(() => {
+            
+        // }, 2000);
+        previewWindow.webContents.openDevTools();
+        previewWindow.on('close', () => { //   <---- Catch close event
+            instance.close();
+            previewWindow = null
+        });
+        // var htmlAppend = 'document.body.innerHTML = '+htmlString
+        // previewWindow.webContents.executeJavaScript(htmlAppend)
+        // previewWindow.webContents.reload() 
+        // previewWindow.loadURL('data:text/html;charset=utf-8,'+encodeURI('<link rel="stylesheet" type="text/css" src="index.css">'+htmlString));
+        // previewWindow.webContents.on('did-finish-load', function() {
+        //     // this is with async way
+        //     // fs.readFile(__dirname+ '/index.css', 'utf-8', function(error, data) {
+        //     //     if(!error){
+        //     //         mainWindow.webContents.insertCSS(data)
+        //     //     }
+        //     // })
+        //     read('example.css', function(err, data){
+        //         if(!err) {
+        //             var cssString = css.stringify(data);
+        //             mainWindow.webContents.insertCSS(cssString)
 
+        //         }
+        //     });
+        // });
+
+
+
+        // http.createServer(function (req, res) {
+        //   res.write('<html><head><link rel="stylesheet" href="src/index.css"></head><body>');
+        //   res.write(htmlString);
+        //   res.end('</body></html>');
+        // }).listen(1337);
+    })
+    ipcMain.on('listeningToolWindow', (event, path, htmlString)=> {
+        listeningWindow = new BrowserWindow({width: 1000,
+            height: 600,
+            minWidth: 1000,
+            minHeight: 600})
+        server.set('views', __dirname);
+        server.set('view engine', 'pug')
+        server.get('/', (req, res) => {
+            res.set('Content-Type', 'text/html');
+            res.render('listeningTool')
+        })
+        let instance = server.listen(1337, () => console.log('Preview on port 1337!'))
+        listeningWindow.loadURL('http://localhost:1337')
+
+        listeningWindow.webContents.openDevTools();
+        listeningWindow.on('close', () => { //   <---- Catch close event
+            instance.close();
+            listeningWindow = null
+        });
+    })
     const template = [
       {
         label: 'File',
         submenu: [
           {
+            label: 'New',
             role: 'new',
             accelerator: 'CmdOrCtrl+N',
             click (item) {
@@ -51,6 +133,7 @@ function createWindow() {
             }
           },
           {
+            label: 'Open',
             role: 'open',
             accelerator: 'CmdOrCtrl+O',
             click (item) {
@@ -58,6 +141,7 @@ function createWindow() {
             }
           },
           {
+            label: 'Save',
             role: 'save',
             accelerator: 'CmdOrCtrl+S',
             click (item) {
@@ -65,6 +149,7 @@ function createWindow() {
             }
           },
           {
+            label: 'Save As',
             role: 'save as',
             accelerator: 'CmdOrCtrl+A',
             click (item) {
@@ -72,10 +157,17 @@ function createWindow() {
             }
           },
           {
+            label: 'Export as PDF',
             role: 'export',
             accelerator: 'CmdOrCtrl+E',
             click (item) {
               mainWindow.webContents.send('exportFile')
+            }
+          },
+          {
+            label: 'Listen',
+            click (item) {
+              mainWindow.webContents.send('openListeningTool')
             }
           }
         ]
