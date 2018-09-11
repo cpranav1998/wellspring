@@ -100,26 +100,6 @@ function createWindow() {
         //   res.end('</body></html>');
         // }).listen(1337);
     })
-    ipcMain.on('listeningToolWindow', (event, path, htmlString)=> {
-        listeningWindow = new BrowserWindow({width: 1000,
-            height: 600,
-            minWidth: 1000,
-            minHeight: 600})
-        server.set('views', __dirname);
-        server.set('view engine', 'pug')
-        server.get('/', (req, res) => {
-            res.set('Content-Type', 'text/html');
-            res.render('listeningTool')
-        })
-        let instance = server.listen(1337, () => console.log('Preview on port 1337!'))
-        listeningWindow.loadURL('http://localhost:1337')
-
-        listeningWindow.webContents.openDevTools();
-        listeningWindow.on('close', () => { //   <---- Catch close event
-            instance.close();
-            listeningWindow = null
-        });
-    })
     const template = [
       {
         label: 'File',

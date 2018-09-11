@@ -10,15 +10,15 @@ import {
   Redirect
 } from 'react-router-dom'
 import RouteWithProps from './routeWithProps'
+import ListeningModalWindow from './listeningTool'
 //import { Container,Segment, Tab, Grid } from 'semantic-ui-react'
-import { Menu, Affix, Card,Tabs } from 'antd';
+import { Select, Button, Modal, Menu, Card, Row, Col, Tabs } from 'antd';
 import List from './listComponent.js'
 const electron = window.require('electron');
 const fs = electron.remote.require('fs');
 const {dialog} = electron.remote;
 const ipcRenderer  = electron.ipcRenderer;
 const fountain = require('./fountain.js');
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -29,13 +29,15 @@ class App extends Component {
       current: 'notes',
       tokens: [],
       locations: [],
-      dialogs:[]
+      dialogs:[],
+      listeningTool: false
     }
     this.fountainToHTML = this.fountainToHTML.bind(this);
     this.locationOrNotes = this.locationOrNotes.bind(this);
     this.goToLine = this.goToLine.bind(this);
     this.getEditorInstance = this.getEditorInstance.bind(this);
-    this.editor = null
+    this.editor = null;
+    this.showModal.bind(this.showModal);
   };
   componentDidMount() {
     console.log(fs)
@@ -112,10 +114,8 @@ class App extends Component {
     });
     ipcRenderer.on('openListeningTool', (event) => {
       if (this.state.dialogs != []){
-        ipcRenderer.send('listeningToolWindow', this.state.dialogs, 
-          () =>{console.log('callback valid')});
-      }
-    });
+        this.setState({listeningTool: true})
+    }});
   }
   componentDidUpdate(){
     console.log(this.state.current)
@@ -259,6 +259,16 @@ class App extends Component {
       }
     }
   }
+  selectVoices = () => {
+
+  }
+  showModal = () => {
+    if (this.state.listeningTool) {
+      return (
+        <ListeningModalWindow dialogs={this.state.dialogs} listeningTool={this.state.listeningTool}/>
+      );
+    }
+  }
   render() {
     const SubMenu = Menu.SubMenu;
     const MenuItemGroup = Menu.ItemGroup;
@@ -269,34 +279,35 @@ class App extends Component {
     // ]
     return (
       <div className="App">
+        {this.showModal()}
         <SplitterLayout percentage={true} style = {{"overflow-y": "hidden"}} primaryIndex={1} secondaryInitialSize={60}>
-        <div>
-          <SplitterLayout percentage={true} style = {{"overflow-y": "hidden"}}primaryIndex={1} secondaryInitialSize={30}>
-            <div>
-              <Menu
-                style={{ position:'fixed', top:'0', width:'100%'}}
-                selectedKeys={[this.state.current]}
-                mode="horizontal"
-              >
-                <Menu.Item key="location"
-                onClick={()=>{this.setState({current:'location'})}}>
-                  Location
-                </Menu.Item>
-                <Menu.Item key="notes"
-                onClick={()=>{this.setState({current:'notes'})}}>
-                  Notes
-                </Menu.Item>
-              </Menu>
-              {this.locationOrNotes()}
-            </div>
-            <div className="editor-pane">
-              <Editor className="editor" style={this.editorCSS} value={this.state.source} function = {this.fountainToHTML} onMount={this.getEditorInstance}/>
-            </div>
-          </SplitterLayout>
-        </div>
-        <div dangerouslySetInnerHTML={{ __html: this.handleNoOutput()}}>
-        </div>
-      </SplitterLayout>
+          <div>
+            <SplitterLayout percentage={true} style = {{"overflow-y": "hidden"}}primaryIndex={1} secondaryInitialSize={30}>
+              <div>
+                <Menu
+                  style={{ position:'fixed', top:'0', width:'100%'}}
+                  selectedKeys={[this.state.current]}
+                  mode="horizontal"
+                >
+                  <Menu.Item key="location"
+                  onClick={()=>{this.setState({current:'location'})}}>
+                    Location
+                  </Menu.Item>
+                  <Menu.Item key="notes"
+                  onClick={()=>{this.setState({current:'notes'})}}>
+                    Notes
+                  </Menu.Item>
+                </Menu>
+                {this.locationOrNotes()}
+              </div>
+              <div className="editor-pane">
+                <Editor className="editor" style={this.editorCSS} value={this.state.source} function = {this.fountainToHTML} onMount={this.getEditorInstance}/>
+              </div>
+            </SplitterLayout>
+          </div>
+          <div dangerouslySetInnerHTML={{ __html: this.handleNoOutput()}}>
+          </div>
+        </SplitterLayout>
       </div>
     );
   }
