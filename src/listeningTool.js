@@ -27,6 +27,7 @@ export default class ListeningModalWindow extends Component {
 		// }
 		let uniqueCharacters = Array.from(new Set(characters));
 		console.log(uniqueCharacters)
+		
 	}
 	render() {
 	    return (
