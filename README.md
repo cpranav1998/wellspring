@@ -1,4 +1,4 @@
-Wellspring: An Editor of Screenwriting based on the Fountain Markup Language:
+Wellspring: An Editor for Screenwriting based on the Fountain Markup Language:
 
 Fountain Markup Language: https://fountain.io/
 
