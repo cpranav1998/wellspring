@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "electron": "^2.0.7",
+    "eslint-config-airbnb": "^17.1.0",
     "foreman": "^3.0.1"
   }
 }

@@ -315,34 +315,3 @@ class App extends Component {
 
 export default App;
 
-// style = {this.padding}
-
-// <div className="card-container">
-//                   <Tabs type="card">
-//                     <TabPane tab="Tab Title 1" key="1">
-//                      
-//                     </TabPane>
-//                     <TabPane tab="Tab Title 2" key="2">
-//                       <p>Content of Tab Pane 2</p>
-//                       <p>Content of Tab Pane 2</p>
-//                       <p>Content of Tab Pane 2</p>
-//                     </TabPane>
-//                   </Tabs>
-//                 </div>
-
-// <Card title="Card title" extra={<a href="#">More</a>} style={{"margin":"10px 10px", position:'relative','z-index':'-5'}}>
-//   <p>Card content</p>
-// </Card>
-// <Card title="Card title" extra={<a href="#">More</a>} style={{"margin":"10px 10px", position:'relative','z-index':'-5' }}>
-//   <p>Card content</p>
-// </Card>
-// <Card title="Card title" extra={<a href="#">More</a>} style={{"margin":"10px 10px", position:'relative','z-index':'-5' }}>
-//   <p>Card content</p>
-// </Card>
-// <Card title="Card title" extra={<a href="#">More</a>} style={{"margin":"10px 10px", position:'relative','z-index':'-5' }}>
-//   <p>Card content</p>
-// </Card>
-// <Card title="Card title" extra={<a href="#">More</a>} style={{"margin":"10px 10px", position:'relative','z-index':'-5' }}>
-//   <p>Card content</p>
-// </Card>
-
